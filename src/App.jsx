@@ -288,30 +288,18 @@ function App() {
       )}
 
       {/* Error State */}
-      // In your App.jsx error section
-{error && (
+      {error && (
   <div className="error-container">
     <div className="error-message">
       <h3>Oops! Something went wrong</h3>
       <p>{error}</p>
-      {/* Add debug info in development */}
-      {import.meta.env.DEV && (
-        <details style={{ marginTop: '20px', color: '#666', fontSize: '0.9rem' }}>
-          <summary>Debug Information</summary>
-          <pre style={{ textAlign: 'left', background: '#f5f5f5', padding: '10px', borderRadius: '5px' }}>
-            API Key exists: {!!import.meta.env.VITE_WEATHER_API_KEY ? 'Yes' : 'No'}
-            {'\n'}API Base URL: {import.meta.env.VITE_API_BASE_URL}
-            {'\n'}Current Location: {location}
-            {'\n'}Environment: {import.meta.env.MODE}
-          </pre>
-        </details>
-      )}
       <button onClick={refetch} className="retry-btn">
         Try Again
       </button>
     </div>
   </div>
 )}
+
 
 
       {/* Weather Content - Same as before */}
