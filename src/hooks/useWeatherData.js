@@ -1,29 +1,39 @@
+// src/hooks/useWeatherData.js
 import { useState, useEffect, useCallback } from 'react';
-
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
-const API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
+import weatherService from '../services/weatherApi';
 
 function useWeatherData(location) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchWeather = useCallback(async () => {
+  const fetchWeatherData = useCallback(async () => {
     if (!location) return;
+
     setLoading(true);
+    setError(null);
+
     try {
-      const res = await fetch(`${API_BASE}/forecast.json?key=${API_KEY}&q=${location}&days=5&aqi=yes&alerts=yes`);
-      if (!res.ok) throw new Error('API error');
-      const json = await res.json();
-      setData(json);
+      console.log('Fetching weather for:', location); // Debug log
+      console.log('API Key exists:', !!import.meta.env.VITE_WEATHER_API_KEY); // Debug log
+      
+      const weatherData = await weatherService.getForecast(location, 5, true, true);
+      console.log('Weather data received:', weatherData); // Debug log
+      
+      setData(weatherData);
     } catch (err) {
-      setError(err.message);
+      console.error('Weather fetch error:', err); // Debug log
+      setError(err.message || 'Failed to fetch weather data');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, [location]);
 
-  useEffect(() => { fetchWeather(); }, [fetchWeather]);
-  return { data, loading, error, refetch: fetchWeather };
+  useEffect(() => {
+    fetchWeatherData();
+  }, [fetchWeatherData]);
+
+  return { data, loading, error, refetch: fetchWeatherData };
 }
 
 export default useWeatherData;
